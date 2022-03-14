@@ -31,7 +31,8 @@ class Projectile {
         ctx.fillStyle = this.cor
         ctx.fill()
     }
-    move() {
+    update() {
+        this.draw()
         this.x += this.velocidade.x
         this.y += this.velocidade.y
     }
@@ -40,15 +41,24 @@ const x = canvas.width / 2
 const y = canvas.height / 2
 
 const player = new Player(x, y, 30, 'blue')
-const projetil = new Projectile(x, y, 5, 'red', {x: 1, y: 1})
-player.draw()
+const projeteis = []
+
 function animate() {
     requestAnimationFrame(animate)
-    projetil.draw()
-    projetil.move()
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    projeteis.forEach(function(projetil) {
+        projetil.update()
+    })
+    player.draw()
 }
 
 window.addEventListener('click', function(click) {
+    const angulo = Math.atan2(click.clientY - y, click.clientX - x)
+    const velocidade = {
+        x: Math.cos(angulo),
+        y: Math.sin(angulo)
+    }
+    const projetil = new Projectile(x, y, 5, 'red', velocidade)
+    projeteis.push(projetil)
 })
-
 animate()
